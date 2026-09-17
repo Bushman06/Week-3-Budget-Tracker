@@ -1,108 +1,238 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 40px;
-    background-color: #f4f4f4;
+    font-family: "DM Sans", sans-serif;
+    color: #1f3720;
+    background-color: var(--background-color);
+
+    margin: 0;
+    padding: 40px;
+
+    line-height: 1.6;
 }
+
+h1,
+h2 {
+    font-family: "Poppins", sans-serif;
+    color: #175417;
+}
+
+h1 {
+    font-size: 36px;
+    margin: 10px 0;
+}
+
+h2 {
+    font-size: 24px;
+    margin-top: 0;
+}
+
+p {
+    font-size: 16px;
+}
+
 header {
+    background-color: #FFFFFF;
+
     text-align: center;
+
+    padding: 30px;
     margin-bottom: 30px;
+
+    border: 1px solid #d5dbd1;
+    border-radius: 12px;
+
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+header img {
+    border-radius: 50%;
+    margin-bottom: 10px;
 }
 
 #main-heading {
-    color: darkblue;
+    color: #175417;
 }
-
 
 header p {
-    font-size: 18px;
+    color: #4B5563;
+    margin-bottom: 0;
 }
-
 
 .expense-section {
-    background-color: lightblue;
-    padding: 20px;
-    margin-top: 30px;
+    background-color: #F4F7FB;
+
+    padding: 30px;
+    margin-bottom: 30px;
+
+    border: 1px solid #d5dbd1;
+    border-radius: 12px;
+
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
-.expense-section > h2 {
-    color: darkblue;
+.expense-section h2 {
+    color: #175417;
 }
 
-input {
+form label {
     display: block;
-    width: 300px;
-    padding: 10px;
-    margin: 10px 0;
+
+    font-weight: 600;
+
+    margin-top: 15px;
+    margin-bottom: 6px;
 }
 
-input:not([type="submit"]) {
-    border: 2px solid #999;
-}
-
-input:focus {
-    background-color: #ffffcc;
-    outline: none;
-}
-
+input,
 select {
-    display: block;
-    width: 320px;
-    padding: 10px;
-    margin: 10px 0;
+    width: 100%;
+    max-width: 500px;
+
+    box-sizing: border-box;
+
+    padding: 12px;
+
+    margin-bottom: 10px;
+
+    border: 1px solid #d5dbd1;
+    border-radius: 8px;
+
+    background-color: #f7fbf4;
+
+    font-family: "DM Sans", sans-serif;
+    font-size: 16px;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+
+    border-color: #d5dbd1;
+
+    box-shadow: 0 0 0 3px lightgreen;
 }
 
 button {
-    padding: 10px 20px;
+    background-color: #25eb46;
+    color: #FFFFFF;
+
+    border: none;
+    border-radius: 8px;
+
+    padding: 12px 24px;
+
+    margin-top: 15px;
+
+    font-family: "DM Sans", sans-serif;
     font-size: 16px;
+    font-weight: 600;
+
     cursor: pointer;
 }
 
 button:hover {
-    opacity: 0.8;
+    background-color: #175417;
 }
 
 details {
-    background-color: white;
-    padding: 15px;
+    background-color: #FFFFFF;
+
+    padding: 20px;
     margin-bottom: 30px;
+
+    border: 1px solid #d5dbd1;
+    border-radius: 12px;
 }
 
 summary {
+    color: #175417;
+
+    font-weight: 600;
+
     cursor: pointer;
-    font-weight: bold;
 }
 
 #expenses-list {
-    background-color: white;
-    padding: 20px;
+    background-color: #FFFFFF;
+
+    padding: 30px;
+    margin-bottom: 30px;
+
+    border: 1px solid #d5dbd1;
+    border-radius: 12px;
+
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+
+    overflow-x: auto;
+}
+
+#expenses-list h2 {
+    color: #175417;
 }
 
 table {
     width: 100%;
+
     border-collapse: collapse;
+
+    margin-top: 20px;
 }
 
-#expenses-list td {
-    padding: 12px;
-    border: 1px solid #ccc;
-}
+th,
+td {
+    padding: 14px;
 
-th {
-    padding: 12px;
-    background-color: darkblue;
-    color: white;
+    border: 1px solid #d5dbd1;
+
     text-align: left;
 }
 
+th {
+    background-color: #175417;
+    color: #FFFFFF;
+
+    font-family: "Poppins", sans-serif;
+}
+
 tbody tr:nth-child(even) {
-    background-color: #f2f2f2;
+    background-color: #f5ffef;
 }
 
 tbody tr:hover {
-    background-color: lightblue;
+    background-color: lightgreen;
 }
 
 .video-section {
-    margin-top: 30px;
+    background-color: #FFFFFF;
+
+    padding: 30px;
+    margin-bottom: 30px;
+
+    border: 1px solid #d5dbd1;
+    border-radius: 12px;
+
     text-align: center;
+}
+
+.video-section iframe {
+    max-width: 100%;
+}
+
+
+@media (max-width: 600px) {
+
+    body {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 28px;
+    }
+
+    .expense-section,
+    #expenses-list,
+    header,
+    .video-section {
+        padding: 20px;
+    }
+
 }
