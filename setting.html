@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Manage your SpendWise personal information and appearance settings.">
+    <title>SpendWise | Settings</title>
+
+    <script>
+        document.documentElement.dataset.theme =
+            localStorage.getItem("spendwiseTheme") || "light";
+    </script>
+
+    <link rel="stylesheet" href="setting.css">
+    <script src="setting.js" defer></script>
+</head>
+
+<body>
+
+    <div class="settings-layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <a href="index.html" class="brand">
+                <span class="brand-icon">S</span>
+                <span>SpendWise</span>
+            </a>
+
+            <p class="nav-heading">MENU</p>
+
+            <nav class="navigation">
+                <a href="index.html" class="nav-link">
+                    <span>⌂</span> Dashboard
+                </a>
+
+                <a href="index.html#transactions" class="nav-link">
+                    <span>▤</span> Transactions
+                </a>
+
+                <a href="index.html#categories" class="nav-link">
+                    <span>▦</span> Categories
+                </a>
+
+                <a href="setting.html" class="nav-link active">
+                    <span>⚙</span> Settings
+                </a>
+            </nav>
+
+            <div class="sidebar-note">
+                <strong>Spend smarter.</strong>
+                <p>Small steps today, better finances tomorrow.</p>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <header class="page-header">
+                <p class="eyebrow">ACCOUNT MANAGEMENT</p>
+                <h1>Settings</h1>
+                <p>Manage your personal information and customize your experience.</p>
+            </header>
+
+            <!-- Personal Information -->
+            <section class="settings-card">
+                <div class="section-heading">
+                    <h2>Personal Information</h2>
+                    <p>Update your account details below.</p>
+                </div>
+
+                <form id="profileForm">
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label for="fullName">Full Name</label>
+                            <input
+                                type="text"
+                                id="fullName"
+                                placeholder="Enter your full name"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input
+                                type="email"
+                                id="email"
+                                placeholder="Enter your email"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input
+                                type="tel"
+                                id="phone"
+                                placeholder="Enter your phone number"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="currency">Preferred Currency</label>
+                            <select id="currency">
+                                <option value="KSh">Kenyan Shilling (KSh)</option>
+                                <option value="USD">US Dollar ($)</option>
+                                <option value="EUR">Euro (€)</option>
+                                <option value="GBP">British Pound (£)</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <button type="submit" class="primary-btn">
+                        Save Changes
+                    </button>
+
+                    <p id="profileMessage" class="message" role="status"></p>
+
+                </form>
+            </section>
+
+            <!-- Appearance Settings -->
+            <section class="settings-card">
+                <div class="section-heading">
+                    <h2>Appearance</h2>
+                    <p>Choose how SpendWise looks on your device.</p>
+                </div>
+
+                <div class="setting-option">
+                    <div>
+                        <h3>Dark Mode</h3>
+                        <p>Change between light and dark themes.</p>
+                    </div>
+
+                    <label class="switch">
+                        <input type="checkbox" id="darkMode">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <p id="themeMessage" class="message" role="status"></p>
+            </section>
+
+            <!-- Data Management -->
+            <section class="settings-card">
+                <div class="section-heading">
+                    <h2>Data Management</h2>
+                    <p>Manage the personal information saved on this device.</p>
+                </div>
+
+                <div class="setting-option">
+                    <div>
+                        <h3>Clear Personal Information</h3>
+                        <p>Delete your saved profile information.</p>
+                    </div>
+
+                    <button type="button" id="clearProfile" class="danger-btn">
+                        Clear Profile
+                    </button>
+                </div>
+            </section>
+
+            <footer class="footer">
+                <p>© 2026 SpendWise. Manage your money wisely.</p>
+            </footer>
+
+        </main>
+    </div>
+
+</body>
+</html>

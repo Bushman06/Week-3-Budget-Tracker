@@ -317,3 +317,12 @@ setBudgetBtn.addEventListener("click", function () {
 // 13. LOAD SAVED DATA WHEN THE PAGE OPENS
 
 updateDashboard();
+function applyTheme(theme) {
+    document.documentElement.dataset.theme = theme;
+
+    localStorage.setItem("spendwiseTheme", theme);
+
+    if (darkModeToggle) {
+        darkModeToggle.checked = theme === "dark";
+    }
+}

@@ -6,6 +6,10 @@
   <meta name="description" content="SpendWise personal budget and expense tracker dashboard.">
   <title>SpendWise | Dashboard</title>
   <link rel="stylesheet" href="style.css">
+  <script>
+    document.documentElement.dataset.theme =
+        localStorage.getItem("spendwiseTheme") || "light";
+</script>
 </head>
 <body>
 
@@ -38,15 +42,18 @@
       </nav>
 
       <div class="sidebar-bottom">
-        <p class="nav-heading">ACCOUNT</p>
-        <a href="#settings" class="nav-link">
-          <span class="nav-icon">⚙</span> Settings
-        </a>
-        <div class="sidebar-note">
-          <strong>Spend smarter.</strong>
-          <p>Small steps today, better finances tomorrow.</p>
-        </div>
-      </div>
+    <p class="nav-heading">ACCOUNT</p>
+
+    <a href="setting.html" class="nav-link">
+        <span class="nav-icon">⚙</span>
+        Settings
+    </a>
+
+    <div class="sidebar-note">
+        <strong>Spend smarter.</strong>
+        <p>Small steps today, better finances tomorrow.</p>
+    </div>
+</div>
     </aside>
 
     <!-- Main dashboard area -->
@@ -158,7 +165,7 @@
                 <h3>KSh 4,200</h3>
                 <p>Monthly spending</p>
               </div>
-            </article>
+0            </article>
 
             <article class="category-card" tabindex="0">
               <div class="card-top">

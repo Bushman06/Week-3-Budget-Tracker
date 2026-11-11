@@ -18,7 +18,60 @@
   padding: 0;
   box-sizing: border-box;
 }
+:root {
+    --background: #f5f5f5;
+    --surface: #ffffff;
+    --text: #333333;
+    --muted: #6b756d;
+    --border: #e2e9e3;
+}
 
+/* SpendWise shared theme */
+
+:root {
+    --background: #f5f5f5;
+    --surface: #ffffff;
+    --text: #333333;
+    --muted: #6b756d;
+    --border: #e2e9e3;
+}
+
+:root[data-theme="dark"] {
+    --background: #141a16;
+    --surface: #202a23;
+    --text: #edf4ee;
+    --muted: #b1beb4;
+    --border: #39483d;
+}
+
+body {
+    background: var(--background);
+    color: var(--text);
+}
+
+.sidebar,
+.topbar,
+.summary-card,
+.category-card,
+.budget-insights,
+.expense-form-section,
+.transactions-section {
+    background: var(--surface);
+    color: var(--text);
+    border-color: var(--border);
+}
+
+input,
+select,
+table {
+    color: var(--text);
+}
+
+input,
+select {
+    background: var(--surface);
+    border-color: var(--border);
+}
 html {
   scroll-behavior: smooth;
 }
@@ -733,3 +786,142 @@ tbody tr:hover {
         font-size: 14px;
     }
 }
+
+
+/* =====================================
+   SPENDWISE GLOBAL DARK MODE
+===================================== */
+
+/* Light mode */
+:root {
+    --background: #f5f5f5;
+    --surface: #ffffff;
+    --text: #333333;
+    --muted: #6b756d;
+    --border: #e2e9e3;
+    --primary: #2e7d32;
+    --input-bg: #ffffff;
+}
+
+/* Dark mode */
+:root[data-theme="dark"] {
+    --background: #141a16;
+    --surface: #202a23;
+    --text: #edf4ee;
+    --muted: #b1beb4;
+    --border: #39483d;
+    --primary: #66bb6a;
+    --input-bg: #263229;
+}
+
+/* Main website backgrounds */
+html,
+body,
+.dashboard,
+.main-area,
+.content {
+    background-color: var(--background) !important;
+    color: var(--text);
+}
+
+/* Sidebar and header */
+.sidebar,
+.topbar,
+.header-actions,
+.sidebar-note {
+    background-color: var(--surface) !important;
+    color: var(--text) !important;
+    border-color: var(--border) !important;
+}
+
+/* Dashboard cards and sections */
+.summary-card,
+.category-card,
+.budget-insights,
+.expense-form-section,
+.transactions-section,
+.section,
+.table-wrapper {
+    background-color: var(--surface) !important;
+    color: var(--text) !important;
+    border-color: var(--border) !important;
+}
+
+/* All headings and normal text */
+h1, h2, h3, h4,
+p, label,
+.card-label,
+.summary-top,
+.card-bottom,
+.nav-link,
+.welcome {
+    color: var(--text);
+}
+
+/* Secondary text */
+.muted,
+.eyebrow,
+.nav-heading,
+.date-label,
+.sidebar-note p {
+    color: var(--muted);
+}
+
+/* Form fields */
+input,
+select,
+textarea {
+    background-color: var(--input-bg) !important;
+    color: var(--text) !important;
+    border-color: var(--border) !important;
+}
+
+/* Tables */
+table {
+    background-color: var(--surface);
+    color: var(--text);
+    border-color: var(--border);
+}
+
+thead,
+tbody,
+tr,
+td,
+th {
+    background-color: var(--surface);
+    color: var(--text);
+    border-color: var(--border);
+}
+
+/* Navigation */
+.nav-link:hover,
+.nav-link.active {
+    background-color: #e8f5e9;
+    color: var(--primary);
+}
+
+:root[data-theme="dark"] .nav-link:hover,
+:root[data-theme="dark"] .nav-link.active {
+    background-color: #294331;
+    color: #a5d6a7;
+}
+
+/* Keep buttons visible */
+button,
+.primary-btn {
+    background-color: var(--primary);
+    color: #ffffff;
+}
+
+/* Smooth theme transition */
+body,
+.sidebar,
+.topbar,
+.summary-card,
+.category-card,
+.budget-insights,
+.expense-form-section,
+.transactions-section {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
