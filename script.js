@@ -1,14 +1,25 @@
 
 // ======================================
-// SPENDWISE - BUDGET TRACKER
+// SPENDWISE - INTERACTIVE BUDGET TRACKER
 // ======================================
 
-// 1. APPLICATION DATA
-let monthlyBudget = Number(localStorage.getItem("monthlyBudget")) || 0;
+// 1. VARIABLES AND APPLICATION DATA
 
-let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+let monthlyBudget =
+    Number(localStorage.getItem("monthlyBudget")) || 0;
 
-// 2. SELECT HTML ELEMENTS
+let expenses = [];
+
+try {
+    const savedExpenses = JSON.parse(
+        localStorage.getItem("expenses") || "[]"
+    );
+
+    expenses = Array.isArray(savedExpenses) ? savedExpenses : [];
+} catch (error) {
+    expenses = [];
+}
+
 const budgetAmount = document.getElementById("budgetAmount");
 const totalExpenses = document.getElementById("totalExpenses");
 const remainingBalance = document.getElementById("remainingBalance");
@@ -22,7 +33,13 @@ const transactionList = document.getElementById("transactionList");
 const setBudgetBtn = document.getElementById("setBudgetBtn");
 const message = document.getElementById("message");
 
-// 3. FORMAT MONEY
+const budgetStatus = document.getElementById("budgetStatus");
+const budgetProgress = document.getElementById("budgetProgress");
+const spendingPercentage = document.getElementById("spendingPercentage");
+const categorySummary = document.getElementById("categorySummary");
+
+// 2. FORMAT CURRENCY
+
 function formatMoney(amount) {
     return "KSh " + amount.toLocaleString("en-KE", {
         minimumFractionDigits: 2,
@@ -30,46 +47,111 @@ function formatMoney(amount) {
     });
 }
 
-// 4. CALCULATE TOTAL EXPENSES
+// 3. CALCULATE TOTAL EXPENSES USING A LOOP
+
 function calculateTotalExpenses() {
-    return expenses.reduce((total, expense) => {
-        return total + expense.amount;
-    }, 0);
+    let total = 0;
+
+    for (const expense of expenses) {
+        total += expense.amount;
+    }
+
+    return total;
 }
 
-// 5. CALCULATE REMAINING BALANCE
-function calculateBalance(budget, expenseTotal) {
-    return budget - expenseTotal;
+// 4. CALCULATE REMAINING BALANCE
+
+function calculateBalance(budget, total) {
+    return budget - total;
 }
 
-// 6. UPDATE DASHBOARD
-function updateDashboard() {
-    const total = calculateTotalExpenses();
-    const balance = calculateBalance(monthlyBudget, total);
+// 5. CHECK BUDGET STATUS USING CONDITIONALS
 
-    budgetAmount.textContent = formatMoney(monthlyBudget);
-    totalExpenses.textContent = formatMoney(total);
-    remainingBalance.textContent = formatMoney(balance);
+function checkBudgetStatus(balance, total) {
+    if (monthlyBudget === 0) {
+        budgetStatus.textContent =
+            "Please set your monthly budget to get started.";
+        budgetStatus.style.color = "#666666";
 
-    // Show warning when spending exceeds the budget
-    remainingBalance.style.color =
-        balance < 0 ? "#d32f2f" : "#2e7d32";
+    } else if (balance < 0) {
+        budgetStatus.textContent =
+            "Warning! You have exceeded your monthly budget.";
+        budgetStatus.style.color = "#d32f2f";
 
-    // Save information in the browser
-    localStorage.setItem("monthlyBudget", monthlyBudget);
-    localStorage.setItem("expenses", JSON.stringify(expenses));
+    } else if (total / monthlyBudget >= 0.8) {
+        budgetStatus.textContent =
+            "Careful! You have used 80% or more of your budget.";
+        budgetStatus.style.color = "#ed8b00";
 
-    displayTransactions();
-
-    // Display results in the browser console
-    console.clear();
-    console.log("===== SPENDWISE BUDGET REPORT =====");
-    console.log("Monthly Budget:", formatMoney(monthlyBudget));
-    console.log("Total Expenses:", formatMoney(total));
-    console.log("Remaining Balance:", formatMoney(balance));
+    } else {
+        budgetStatus.textContent =
+            "Great! Your spending is within your budget.";
+        budgetStatus.style.color = "#2e7d32";
+    }
 }
 
-// 7. DISPLAY EXPENSES IN THE TABLE
+// 6. DISPLAY BUDGET PROGRESS
+
+function updateBudgetProgress(total) {
+    let percentage = 0;
+
+    if (monthlyBudget > 0) {
+        percentage = (total / monthlyBudget) * 100;
+    }
+
+    // Keep the visual progress bar between 0% and 100%
+    const displayedPercentage = Math.min(percentage, 100);
+
+    budgetProgress.style.width = displayedPercentage + "%";
+
+    if (percentage >= 100) {
+        budgetProgress.style.backgroundColor = "#d32f2f";
+    } else if (percentage >= 80) {
+        budgetProgress.style.backgroundColor = "#ed8b00";
+    } else {
+        budgetProgress.style.backgroundColor = "#2e7d32";
+    }
+
+    spendingPercentage.textContent =
+        percentage.toFixed(1) + "% of budget used";
+}
+
+// 7. GROUP EXPENSES BY CATEGORY
+
+function displayCategorySummary() {
+    categorySummary.innerHTML = "";
+
+    if (expenses.length === 0) {
+        const item = document.createElement("li");
+        item.textContent = "No expenses recorded yet.";
+        categorySummary.appendChild(item);
+        return;
+    }
+
+    const categoryTotals = {};
+
+    // Loop through all expenses and group them
+    for (const expense of expenses) {
+        if (categoryTotals[expense.category] === undefined) {
+            categoryTotals[expense.category] = 0;
+        }
+
+        categoryTotals[expense.category] += expense.amount;
+    }
+
+    // Display each category and its total
+    for (const category in categoryTotals) {
+        const item = document.createElement("li");
+
+        item.textContent =
+            category + ": " + formatMoney(categoryTotals[category]);
+
+        categorySummary.appendChild(item);
+    }
+}
+
+// 8. DISPLAY EXPENSE RECORDS IN THE TABLE
+
 function displayTransactions() {
     transactionList.innerHTML = "";
 
@@ -78,14 +160,15 @@ function displayTransactions() {
         const cell = document.createElement("td");
 
         cell.colSpan = 4;
-        cell.textContent = "No expenses added yet.";
+        cell.textContent = "No expenses recorded yet.";
+
         row.appendChild(cell);
         transactionList.appendChild(row);
-
         return;
     }
 
-    expenses.forEach((expense) => {
+    // Loop through every expense in the array
+    for (const expense of expenses) {
         const row = document.createElement("tr");
 
         const nameCell = document.createElement("td");
@@ -116,10 +199,40 @@ function displayTransactions() {
         row.appendChild(actionCell);
 
         transactionList.appendChild(row);
-    });
+    }
 }
 
-// 8. ADD A NEW EXPENSE
+// 9. UPDATE THE WHOLE DASHBOARD
+
+function updateDashboard() {
+    const total = calculateTotalExpenses();
+    const balance = calculateBalance(monthlyBudget, total);
+
+    budgetAmount.textContent = formatMoney(monthlyBudget);
+    totalExpenses.textContent = formatMoney(total);
+    remainingBalance.textContent = formatMoney(balance);
+
+    remainingBalance.style.color =
+        balance < 0 ? "#d32f2f" : "#2e7d32";
+
+    checkBudgetStatus(balance, total);
+    updateBudgetProgress(total);
+    displayTransactions();
+    displayCategorySummary();
+
+    // Save data in browser storage
+    localStorage.setItem("monthlyBudget", monthlyBudget);
+    localStorage.setItem("expenses", JSON.stringify(expenses));
+
+    // Display report in the browser console
+    console.log("===== SPENDWISE BUDGET REPORT =====");
+    console.log("Monthly Budget:", formatMoney(monthlyBudget));
+    console.log("Total Expenses:", formatMoney(total));
+    console.log("Remaining Balance:", formatMoney(balance));
+}
+
+// 10. ADD A NEW EXPENSE THROUGH THE FORM
+
 expenseForm.addEventListener("submit", function (event) {
     event.preventDefault();
 
@@ -127,12 +240,19 @@ expenseForm.addEventListener("submit", function (event) {
     const category = expenseCategory.value;
     const amount = Number(expenseAmount.value);
 
-    if (!name || !category || !Number.isFinite(amount) || amount <= 0) {
-        message.textContent = "Please enter valid expense details.";
+    if (
+        name === "" ||
+        category === "" ||
+        !Number.isFinite(amount) ||
+        amount <= 0
+    ) {
+        message.textContent =
+            "Please enter a valid name, category, and amount.";
         message.style.color = "#d32f2f";
         return;
     }
 
+    // Create an expense object
     const newExpense = {
         id: Date.now(),
         name: name,
@@ -140,6 +260,7 @@ expenseForm.addEventListener("submit", function (event) {
         amount: amount
     };
 
+    // Store the new expense in the array
     expenses.push(newExpense);
 
     updateDashboard();
@@ -150,7 +271,8 @@ expenseForm.addEventListener("submit", function (event) {
     message.style.color = "#2e7d32";
 });
 
-// 9. DELETE AN EXPENSE
+// 11. DELETE AN EXPENSE
+
 function deleteExpense(expenseId) {
     expenses = expenses.filter(function (expense) {
         return expense.id !== expenseId;
@@ -162,22 +284,25 @@ function deleteExpense(expenseId) {
     message.style.color = "#2e7d32";
 }
 
-// 10. SET MONTHLY BUDGET USING A PROMPT
-setBudgetBtn.addEventListener("click", function () {
-    const userInput = prompt("Enter your monthly budget in KSh:");
+// 12. SET MONTHLY BUDGET
 
-    // Cancelled prompt
+setBudgetBtn.addEventListener("click", function () {
+    const userInput = prompt(
+        "Enter your monthly budget in KSh:"
+    );
+
     if (userInput === null) {
         return;
     }
 
     const newBudget = Number(userInput);
 
-    if (userInput.trim() === "" ||
+    if (
+        userInput.trim() === "" ||
         !Number.isFinite(newBudget) ||
-        newBudget < 0) {
-
-        alert("Please enter a valid budget amount.");
+        newBudget <= 0
+    ) {
+        alert("Please enter a valid budget greater than zero.");
         return;
     }
 
@@ -185,9 +310,10 @@ setBudgetBtn.addEventListener("click", function () {
 
     updateDashboard();
 
-    message.textContent = "Monthly budget updated successfully!";
+    message.textContent = "Your monthly budget has been updated!";
     message.style.color = "#2e7d32";
 });
 
-// 11. LOAD SAVED DATA WHEN THE PAGE OPENS
+// 13. LOAD SAVED DATA WHEN THE PAGE OPENS
+
 updateDashboard();

@@ -1,81 +1,126 @@
 
-# SpendWise - Personal Budget Tracker
+# SpendWise - Interactive Budget Tracker
 
-## About the Project
+## Project Overview
 
 SpendWise is a personal budget and expense tracking application
-that helps users manage their money.
+built to help users manage their monthly income and expenses.
 
-Users can set a monthly budget, record their expenses,
-calculate their remaining balance, and monitor their spending.
+Users can set a budget, add expenses, monitor spending,
+and view their remaining balance.
 
-## Features
+## Improvements Made This Week
 
-- Set a monthly budget.
-- Add expenses with names, categories, and amounts.
-- Calculate total expenses automatically.
-- Calculate the remaining budget.
-- Display expenses in a transactions table.
-- Delete expenses.
-- Save budget information using browser localStorage.
-- Display budget calculations in the browser console.
+- Added conditional statements for budget warnings.
+- Used arrays to store multiple expense records.
+- Used loops to process expense information.
+- Added automatic expense categorization.
+- Added a dynamic spending progress bar.
+- Updated dashboard information using DOM manipulation.
+- Added event listeners for buttons and forms.
+- Added localStorage to save user information.
 
 ## JavaScript Concepts Implemented
 
-### 1. Variables
+### 1. Conditional Statements
 
-The project uses `let` and `const` to store information.
+The project uses if, else if, and else to make decisions.
 
-- `monthlyBudget` stores the user's monthly budget.
-- `expenses` stores the list of expenses.
-- `total` stores the calculated expenses.
-- `balance` stores the remaining money.
+Examples:
+- Warn users when they exceed their budget.
+- Alert users when they have used 80% of their budget.
+- Display a positive message when spending is within budget.
+- Validate expense information before saving it.
 
-### 2. Data Types
+### 2. Arrays
 
-The project uses:
+The expenses array stores multiple expense records.
 
-- Numbers for budgets and expenses.
-- Strings for expense names and categories.
-- Arrays to store multiple expenses.
-- Objects to represent individual expenses.
+Each expense is an object containing:
+- An ID
+- Expense name
+- Category
+- Amount
 
-### 3. User Input
+Example:
 
-The application collects information through:
+    let expenses = [
+        {
+            id: 1,
+            name: "Lunch",
+            category: "Food",
+            amount: 500
+        }
+    ];
 
-- HTML input fields for expense names and amounts.
-- A dropdown menu for expense categories.
-- JavaScript `prompt()` for setting the monthly budget.
+### 3. Loops
 
-### 4. Budget Calculations
+The project uses for...of loops to:
+- Calculate total expenses.
+- Display expense records.
+- Group expenses by category.
 
-The application calculates total expenses by adding all recorded expenses.
+### 4. DOM Manipulation
 
-It calculates the remaining balance using:
+The application uses JavaScript DOM methods to update
+the webpage without refreshing it.
 
-Remaining Balance = Monthly Budget - Total Expenses
+Examples:
+- textContent updates budget values.
+- innerHTML clears old transaction rows.
+- createElement creates new table rows and category items.
+- appendChild adds new elements to the webpage.
+- style changes the appearance of budget warnings.
 
-### 5. Functions
+### 5. Events and User Interaction
 
-The project uses reusable functions:
+Event listeners respond to user actions.
 
-- `formatMoney()` formats amounts as Kenyan Shillings.
-- `calculateTotalExpenses()` calculates all expenses.
-- `calculateBalance()` calculates the remaining balance.
-- `updateDashboard()` updates the dashboard.
-- `displayTransactions()` displays recorded expenses.
-- `deleteExpense()` removes an expense.
+- Submit event adds a new expense.
+- Click event sets the monthly budget.
+- Click events on Delete buttons remove expenses.
 
-### 6. Events
+### 6. Functions
 
-JavaScript event listeners respond to user actions,
-including adding expenses, setting a budget, and deleting expenses.
+Reusable functions organize the application:
+
+- formatMoney()
+- calculateTotalExpenses()
+- calculateBalance()
+- checkBudgetStatus()
+- updateBudgetProgress()
+- displayCategorySummary()
+- displayTransactions()
+- updateDashboard()
+- deleteExpense()
 
 ### 7. Local Storage
 
-The application uses browser localStorage to save the budget
-and expenses so that they remain available after refreshing the page.
+localStorage saves the budget and expenses in the browser.
+This allows the information to remain available after refreshing
+the page in the same browser.
+
+## Challenges and Solutions
+
+### Challenge 1: Updating the dashboard
+
+Solution: Used DOM manipulation and a reusable updateDashboard()
+function to refresh the displayed information.
+
+### Challenge 2: Calculating multiple expenses
+
+Solution: Used an array and for...of loops to process
+all recorded expenses.
+
+### Challenge 3: Monitoring budget limits
+
+Solution: Used conditional statements to check the remaining
+balance and display appropriate warnings.
+
+### Challenge 4: Saving information
+
+Solution: Used localStorage and JSON.stringify()
+and JSON.parse() to save and retrieve application data.
 
 ## Technologies Used
 
@@ -85,21 +130,20 @@ and expenses so that they remain available after refreshing the page.
 
 ## Project Files
 
-- `index.html` - Application structure.
-- `style.css` - Application design and layout.
-- `script.js` - Application logic and calculations.
-- `README.md` - Project documentation.
+- index.html
+- style.css
+- script.js
+- README.md
 
-## How to Run the Project
+## How to Run
 
-1. Download or clone the repository.
+1. Clone or download the repository.
 2. Open the project folder in VS Code.
-3. Open `index.html` in your browser.
-4. Click Set Monthly Budget.
-5. Enter your budget.
-6. Add expenses using the form.
-7. View your updated balance and transactions.
+3. Open index.html in a web browser.
+4. Set your monthly budget.
+5. Add expenses and select their categories.
+6. Monitor your spending and remaining balance.
 
 ## Author
 
-SpendWise Budget Tracker Project
+SpendWise Budget Tracker
