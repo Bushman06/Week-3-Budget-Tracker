@@ -1,3 +1,4 @@
+import { updateUser } from '@netlify/identity';
 import { initAccount, renderAuth, api, signOut, showPhoto } from './account.js';
 import { createAmountVisibility, linkAmountVisibility } from './privacy.js';
 const $ = id => document.getElementById(id);
@@ -9,6 +10,7 @@ theme.onchange = () => {
   $('themeMessage').textContent = 'Appearance updated on this device.';
 };
 let profile;
+let pendingEmail = '';
 let privacySaveQueue = Promise.resolve();
 const visibility = createAmountVisibility({
   root: document.documentElement,
@@ -40,7 +42,11 @@ function requireProfile() {
   return false;
 }
 function fill() {
-  $('fullName').value = profile.fullName; $('email').value = profile.email;
+  $('fullName').value = profile.fullName;
+  $('email').value = pendingEmail || profile.email || '';
+  $('emailHelp').textContent = pendingEmail
+    ? `Check your email to confirm ${pendingEmail}. Your current sign-in address is ${profile.email}.`
+    : 'To change your sign-in address, enter a new email and save. Email confirmation may be required.';
   $('phone').value = profile.phone; $('currency').value = profile.currency;
   visibility.setHidden(profile.hideAmounts);
   linkAmountVisibility(profile.hideAmounts, document);
@@ -48,7 +54,7 @@ function fill() {
 }
 async function perform(messageId, action) {
   const message = $(messageId); message.classList.remove('error'); message.textContent = 'Saving…';
-  try { await action(); message.textContent = 'Changes saved.'; }
+  try { const result = await action(); message.textContent = result || 'Changes saved.'; }
   catch (error) { message.classList.add('error'); message.textContent = error.message; }
 }
 async function start() {
@@ -63,6 +69,7 @@ async function start() {
     }
     $('signOut').hidden = false;
     $('accountStatus').textContent = `Signed in as ${user.email || 'your account'}`;
+    pendingEmail = user.pendingEmail || '';
     profile = await api('profile'); fill();
     $('profileFields').disabled = false; $('hideAmounts').disabled = false; $('clearProfile').disabled = false;
   } catch (error) { $('accountStatus').textContent = error.message || 'Unable to load your account. Please reload to try again.'; }
@@ -73,7 +80,20 @@ $('profileForm').onsubmit = event => {
   if (!requireProfile()) return;
   const button = event.submitter; button.disabled = true;
   perform('profileMessage', async () => {
-    profile = await api('profile', { method: 'PUT', body: JSON.stringify({ fullName: $('fullName').value.trim(), phone: $('phone').value.trim(), currency: $('currency').value, hideAmounts: $('hideAmounts').checked }) }); fill();
+    const requestedEmail = $('email').value.trim();
+    profile = await api('profile', { method: 'PUT', body: JSON.stringify({ fullName: $('fullName').value.trim(), phone: $('phone').value.trim(), currency: $('currency').value, hideAmounts: $('hideAmounts').checked }) });
+    if (requestedEmail.toLowerCase() !== profile.email.toLowerCase() && requestedEmail.toLowerCase() !== pendingEmail.toLowerCase()) {
+      try {
+        const user = await updateUser({ email: requestedEmail });
+        pendingEmail = user.pendingEmail || (user.email?.toLowerCase() === requestedEmail.toLowerCase() ? '' : requestedEmail);
+        profile.email = user.email || profile.email;
+        $('accountStatus').textContent = `Signed in as ${profile.email}`;
+      } catch {
+        throw new Error('Your other profile details were saved, but the email change could not be requested. Check the address and try again.');
+      }
+    }
+    fill();
+    return pendingEmail ? 'Profile saved. Check your email to confirm your new address before using it to sign in.' : 'Your personal information has been saved.';
   }).finally(() => { button.disabled = false; });
 };
 $('photoInput').onchange = () => perform('profileMessage', async () => {

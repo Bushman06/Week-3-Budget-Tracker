@@ -101,10 +101,11 @@
                             <label for="email">Email Address</label>
                             <input
                                 type="email"
-                                id="email" readonly autocomplete="email"
+                                id="email" autocomplete="email" maxlength="254" aria-describedby="emailHelp"
                                 placeholder="Enter your email"
                                 required
                             >
+                            <small id="emailHelp">Sign in to save an email change. Your new address may need email confirmation.</small>
                         </div>
 
                         <div class="form-group">
