@@ -1,3 +1,12 @@
+import { initAccount, api, showPhoto } from './account.js';
+import { createAmountVisibility, linkAmountVisibility } from './privacy.js';
+let signedIn = false;
+let ready = false;
+let preferredCurrency = 'KSh';
+let saveQueue = Promise.resolve();
+const dashboardContent = document.getElementById('overview');
+dashboardContent.hidden = true;
+
 
 // ======================================
 // SPENDWISE - INTERACTIVE BUDGET TRACKER
@@ -23,6 +32,25 @@ try {
 const budgetAmount = document.getElementById("budgetAmount");
 const totalExpenses = document.getElementById("totalExpenses");
 const remainingBalance = document.getElementById("remainingBalance");
+let privacySaveQueue = Promise.resolve();
+const amountVisibility = createAmountVisibility({
+    root: document.documentElement,
+    amounts: [remainingBalance, budgetAmount, totalExpenses],
+    controls: [document.getElementById('toggleAmounts')],
+    onChange(hidden) {
+        linkAmountVisibility(hidden, document);
+        const status = document.getElementById('amountVisibilityMessage');
+        status.textContent = hidden ? 'Financial amounts are hidden.' : 'Financial amounts are visible.';
+        if (signedIn) {
+            privacySaveQueue = privacySaveQueue.then(() => api('profile', {
+                method: 'PATCH', body: JSON.stringify({ hideAmounts: hidden })
+            })).catch(() => { status.textContent = 'Display updated. Unable to save your preference; try the control again.'; });
+        }
+    }
+});
+amountVisibility.setHidden(new URLSearchParams(location.search).get('hideAmounts') === 'true');
+linkAmountVisibility(amountVisibility.isHidden(), document);
+
 
 const expenseForm = document.getElementById("expenseForm");
 const expenseName = document.getElementById("expenseName");
@@ -41,7 +69,7 @@ const categorySummary = document.getElementById("categorySummary");
 // 2. FORMAT CURRENCY
 
 function formatMoney(amount) {
-    return "KSh " + amount.toLocaleString("en-KE", {
+    return preferredCurrency + " " + amount.toLocaleString("en-KE", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     });
@@ -208,9 +236,9 @@ function updateDashboard() {
     const total = calculateTotalExpenses();
     const balance = calculateBalance(monthlyBudget, total);
 
-    budgetAmount.textContent = formatMoney(monthlyBudget);
-    totalExpenses.textContent = formatMoney(total);
-    remainingBalance.textContent = formatMoney(balance);
+    amountVisibility.setAmount(budgetAmount, formatMoney(monthlyBudget));
+    amountVisibility.setAmount(totalExpenses, formatMoney(total));
+    amountVisibility.setAmount(remainingBalance, formatMoney(balance));
 
     remainingBalance.style.color =
         balance < 0 ? "#d32f2f" : "#2e7d32";
@@ -220,15 +248,18 @@ function updateDashboard() {
     displayTransactions();
     displayCategorySummary();
 
-    // Save data in browser storage
-    localStorage.setItem("monthlyBudget", monthlyBudget);
-    localStorage.setItem("expenses", JSON.stringify(expenses));
-
-    // Display report in the browser console
-    console.log("===== SPENDWISE BUDGET REPORT =====");
-    console.log("Monthly Budget:", formatMoney(monthlyBudget));
-    console.log("Total Expenses:", formatMoney(total));
-    console.log("Remaining Balance:", formatMoney(balance));
+    if (ready) {
+        if (signedIn) {
+            const body = JSON.stringify({ monthlyBudget, expenses });
+            saveQueue = saveQueue.then(() => api('finances', { method: 'PUT', body })).catch(error => {
+                message.textContent = error.message + ' Your latest changes have not been saved. Reloading may lose them.';
+                message.style.color = '#d32f2f';
+            });
+        } else {
+            localStorage.setItem('monthlyBudget', monthlyBudget);
+            localStorage.setItem('expenses', JSON.stringify(expenses));
+        }
+    }
 }
 
 // 10. ADD A NEW EXPENSE THROUGH THE FORM
@@ -316,13 +347,33 @@ setBudgetBtn.addEventListener("click", function () {
 
 // 13. LOAD SAVED DATA WHEN THE PAGE OPENS
 
-updateDashboard();
-function applyTheme(theme) {
-    document.documentElement.dataset.theme = theme;
-
-    localStorage.setItem("spendwiseTheme", theme);
-
-    if (darkModeToggle) {
-        darkModeToggle.checked = theme === "dark";
+async function startDashboard() {
+    try {
+        const user = await initAccount();
+        if (user) {
+            signedIn = true;
+            const [profile, finances] = await Promise.all([api('profile'), api('finances')]);
+            monthlyBudget = finances.monthlyBudget;
+            expenses = finances.expenses;
+            preferredCurrency = profile.currency;
+            amountVisibility.setHidden(profile.hideAmounts);
+            linkAmountVisibility(profile.hideAmounts, document);
+            document.getElementById('dashboardName').textContent = profile.fullName || 'Your account';
+            document.getElementById('accountLink').textContent = 'Manage profile';
+            showPhoto(profile, document.getElementById('dashboardPhoto'), document.getElementById('dashboardInitial'));
+        }
+        updateDashboard();
+        ready = true;
+        dashboardContent.hidden = false;
+    } catch {
+        dashboardContent.hidden = false;
+        // Never fall back to a guest's records when loading a signed-in account fails.
+        monthlyBudget = 0; expenses = [];
+        updateDashboard();
+        expenseForm.querySelectorAll('input, select, button').forEach(element => { element.disabled = true; });
+        setBudgetBtn.disabled = true;
+        message.textContent = 'Unable to load your account. Reload to try again, or open Settings to sign in.';
+        message.style.color = '#d32f2f';
     }
 }
+startDashboard();

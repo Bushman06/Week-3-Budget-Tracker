@@ -1,0 +1,20 @@
+[hidden] { display: none !important; }
+.avatar { object-fit: cover; }
+html.amounts-private .category-card h3,
+html.amounts-private #transactionList td:nth-child(3),
+html.amounts-private #categorySummary,
+html.amounts-private #budgetStatus,
+html.amounts-private #spendingPercentage { font-size: 0 !important; }
+html.amounts-private .category-card h3::after,
+html.amounts-private #transactionList td:nth-child(3)::after,
+html.amounts-private #categorySummary::after,
+html.amounts-private #budgetStatus::after,
+html.amounts-private #spendingPercentage::after { content: '••••'; font-size: 18px; }
+html.amounts-private #categorySummary li { display: none; }
+html.amounts-private .progress-container { visibility: hidden; }
+
+.amount-visibility-control { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+.amount-visibility-control button { padding: 10px 16px; border: 1px solid var(--border, #b6c6b9); border-radius: 8px; background: var(--surface, #fff); color: var(--text, #26382b); font: inherit; cursor: pointer; }
+.amount-visibility-control button:hover { border-color: #2e7d32; }
+.amount-visibility-control button:focus-visible { outline: 3px solid #2e7d32; outline-offset: 3px; }
+#amountVisibilityMessage { font-size: 13px; }

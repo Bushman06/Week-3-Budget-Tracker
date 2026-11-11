@@ -1,0 +1,29 @@
+{
+  "name": "spendwise",
+  "version": "1.0.0",
+  "description": "SpendWise is a personal budget and expense tracking web application designed to help users manage their money, monitor spending, and make better financial decisions.",
+  "main": "script.js",
+  "scripts": {
+    "build": "vite build",
+    "test": "node --experimental-strip-types --test tests/*.test.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Bushman06/Week-3-Budget-Tracker/issues"
+  },
+  "homepage": "https://github.com/Bushman06/Week-3-Budget-Tracker#readme",
+  "dependencies": {
+    "@netlify/blobs": "^11.1.9",
+    "@netlify/database": "^2.0.3",
+    "@netlify/identity": "^2.0.1",
+    "drizzle-orm": "^1.0.0-beta.22"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^1.0.0-beta.22",
+    "vite": "^8.3.8"
+  },
+  "private": true
+}
