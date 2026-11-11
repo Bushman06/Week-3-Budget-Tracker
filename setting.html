@@ -12,7 +12,7 @@
     </script>
 
     <link rel="stylesheet" href="setting.css">
-    <script src="setting.js" defer></script>
+    <script type="module" src="setting.js"></script>
 </head>
 
 <body>
@@ -61,14 +61,29 @@
                 <p>Manage your personal information and customize your experience.</p>
             </header>
 
+            <section class="settings-card account-card">
+                <p class="eyebrow">YOUR SPACE</p><h2>Your account, your control.</h2>
+                <p id="accountStatus" role="status">Checking your account…</p>
+                <div id="authPanel" hidden></div>
+                <button id="signOut" type="button" class="secondary-btn" hidden>Sign out</button>
+            </section>
             <!-- Personal Information -->
             <section class="settings-card">
                 <div class="section-heading">
                     <h2>Personal Information</h2>
-                    <p>Update your account details below.</p>
+                    <p>Your personal information is always visible here. Sign in to save changes to your account.</p>
                 </div>
 
                 <form id="profileForm">
+                    <fieldset id="profileFields">
+                    <div class="photo-editor">
+                        <span id="profileInitial" class="profile-avatar">U</span>
+                        <img id="profilePhoto" class="profile-avatar" alt="Your profile photo" hidden>
+                        <div><label for="photoInput"><strong>Profile photo</strong></label>
+                        <p>Choose a JPG, PNG or WebP, up to 5 MB.</p>
+                        <input id="photoInput" type="file" accept="image/jpeg,image/png,image/webp">
+                        <button id="removePhoto" type="button" class="secondary-btn">Remove photo</button></div>
+                    </div>
 
                     <div class="form-grid">
 
@@ -76,7 +91,7 @@
                             <label for="fullName">Full Name</label>
                             <input
                                 type="text"
-                                id="fullName"
+                                id="fullName" maxlength="100" autocomplete="name"
                                 placeholder="Enter your full name"
                                 required
                             >
@@ -86,7 +101,7 @@
                             <label for="email">Email Address</label>
                             <input
                                 type="email"
-                                id="email"
+                                id="email" readonly autocomplete="email"
                                 placeholder="Enter your email"
                                 required
                             >
@@ -96,7 +111,7 @@
                             <label for="phone">Phone Number</label>
                             <input
                                 type="tel"
-                                id="phone"
+                                id="phone" maxlength="40" autocomplete="tel"
                                 placeholder="Enter your phone number"
                             >
                         </div>
@@ -117,11 +132,22 @@
                         Save Changes
                     </button>
 
-                    <p id="profileMessage" class="message" role="status"></p>
+                    </fieldset><p id="profileMessage" class="message" role="status"></p>
 
                 </form>
             </section>
 
+            <section class="settings-card">
+                <div class="section-heading"><h2>Privacy</h2><p>A little more privacy, wherever you check your money.</p></div>
+                <div class="setting-option"><div><h3>Hide financial amounts</h3><p>Mask balances, expenses and category totals on your dashboard. This does not lock the app.</p></div>
+                <label class="switch"><input type="checkbox" id="hideAmounts" aria-label="Hide financial amounts"><span class="slider"></span></label></div>
+                <p id="privacyMessage" class="message" role="status"></p>
+                <a href="index.html" class="secondary-btn privacy-dashboard-link">View dashboard amounts</a>
+                <details class="privacy-details"><summary>How your information is stored</summary>
+                <p>Your email, original sign-up name and sign-in details are managed by Netlify Identity. Your name, phone, currency, privacy preference and signed-in budget records are stored in Netlify Database. Your photo is stored privately in Netlify Blobs and is available only through your signed-in account.</p>
+                <p>Guest budgets and the appearance preference stay in this browser. Guest records are not automatically added to an account. Hide amounts is a display preference; sign out on shared devices to protect your account.</p>
+                <p>Remove photo deletes your uploaded image. Clear Profile removes your saved name, phone, photo and profile preferences; your sign-in account and budget records remain.</p></details>
+            </section>
             <!-- Appearance Settings -->
             <section class="settings-card">
                 <div class="section-heading">
@@ -136,7 +162,7 @@
                     </div>
 
                     <label class="switch">
-                        <input type="checkbox" id="darkMode">
+                        <input type="checkbox" id="darkMode" aria-label="Dark mode">
                         <span class="slider"></span>
                     </label>
                 </div>
@@ -148,7 +174,7 @@
             <section class="settings-card">
                 <div class="section-heading">
                     <h2>Data Management</h2>
-                    <p>Manage the personal information saved on this device.</p>
+                    <p>Manage the profile information saved to your account.</p>
                 </div>
 
                 <div class="setting-option">
@@ -157,7 +183,7 @@
                         <p>Delete your saved profile information.</p>
                     </div>
 
-                    <button type="button" id="clearProfile" class="danger-btn">
+                    <button type="button" id="clearProfile" disabled class="danger-btn">
                         Clear Profile
                     </button>
                 </div>

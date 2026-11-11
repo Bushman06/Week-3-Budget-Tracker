@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="SpendWise personal budget and expense tracker dashboard.">
   <title>SpendWise | Dashboard</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css"><link rel="stylesheet" href="account.css">
   <script>
     document.documentElement.dataset.theme =
         localStorage.getItem("spendwiseTheme") || "light";
@@ -70,10 +70,10 @@
         <div class="header-actions">
           <span class="date-label">November 2026</span>
           <div class="profile">
-            <span class="avatar">U</span>
+            <span class="avatar" id="dashboardInitial">U</span><img id="dashboardPhoto" class="avatar" alt="Your profile photo" hidden>
             <div>
-              <strong>User</strong>
-              <small>Personal Account</small>
+              <strong id="dashboardName">Guest</strong>
+              <small><a href="setting.html" id="accountLink">Sign in / Profile</a></small>
             </div>
           </div>
         </div>
@@ -81,6 +81,10 @@
 
       <main id="overview" class="content">
 
+        <div class="amount-visibility-control">
+          <button type="button" id="toggleAmounts" aria-pressed="false" aria-controls="remainingBalance budgetAmount totalExpenses">Hide amounts</button>
+          <p id="amountVisibilityMessage" role="status"></p>
+        </div>
         <!-- Summary cards -->
         <section class="summary-grid" aria-label="Financial summary">
           <article class="summary-card">
@@ -165,7 +169,7 @@
                 <h3>KSh 4,200</h3>
                 <p>Monthly spending</p>
               </div>
-0            </article>
+            </article>
 
             <article class="category-card" tabindex="0">
               <div class="card-top">
@@ -325,7 +329,7 @@
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <script type="module" src="script.js"></script>
 
 </body>
 </html>
